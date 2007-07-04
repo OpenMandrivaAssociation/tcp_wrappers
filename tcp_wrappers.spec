@@ -8,7 +8,7 @@
 Summary: 	A security tool which acts as a wrapper for TCP daemons
 Name: 		tcp_wrappers
 Version: 	7.6
-Release: 	%mkrel 29
+Release: 	%mkrel 30
 Group: 		System/Servers	
 License: 	BSD
 URL:		ftp://ftp.porcupine.org/pub/security/index.html
@@ -87,7 +87,7 @@ its header files.
 %patch16 -p1 -b .162412
 
 %build
-
+%serverbuild
 %make OPTFLAGS="$RPM_OPT_FLAGS -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR" \
     LDFLAGS="-pie" REAL_DAEMON_DIR=%{_sbindir} \
     MAJOR=%{LIB_MAJOR} MINOR=%{LIB_MINOR} REL=%{LIB_REL} linux
