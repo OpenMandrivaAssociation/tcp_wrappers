@@ -8,7 +8,7 @@
 Summary: 	A security tool which acts as a wrapper for TCP daemons
 Name: 		tcp_wrappers
 Version: 	7.6
-Release: 	%mkrel 30
+Release: 	%mkrel 31
 Group: 		System/Servers	
 License: 	BSD
 URL:		ftp://ftp.porcupine.org/pub/security/index.html
@@ -54,9 +54,12 @@ This package contains the shared tcp_wrappers library (libwrap).
 %package -n	%{libname}-devel
 Summary:	A security library which acts as a wrapper for TCP daemons
 Group:		Development/C
-Obsoletes:	%{name}-devel libwrap-devel
-Provides:	%{name}-devel libwrap-devel
-Requires:	%{libname} = %{version}
+Obsoletes:	%{name}-devel < %{version}-%{release}
+Provides:	%{name}-devel = %{version}-%{release}
+Obsoletes:	libwrap-devel < %{version}-%{release}
+Provides:	libwrap-devel = %{version}-%{release}
+Provides:       wrap-devel = %{version}-%{release}
+Requires:	%{libname} = %{version}-%{release}
 
 %description -n	%{libname}-devel
 The tcp_wrappers package provides small daemon programs which can
