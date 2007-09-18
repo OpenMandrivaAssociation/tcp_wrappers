@@ -8,7 +8,7 @@
 Summary: 	A security tool which acts as a wrapper for TCP daemons
 Name: 		tcp_wrappers
 Version: 	7.6
-Release: 	%mkrel 31
+Release: 	%mkrel 32
 Group: 		System/Servers	
 License: 	BSD
 URL:		ftp://ftp.porcupine.org/pub/security/index.html
