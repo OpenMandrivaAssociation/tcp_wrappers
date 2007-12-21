@@ -30,6 +30,7 @@ Patch14:	tcp_wrappers-7.6-ldflags.patch
 Patch15:	tcp_wrappers-7.6-fix_sig-bug141110.patch
 Patch16:	tcp_wrappers-7.6-162412.patch
 BuildConflicts:	%{name}-devel
+BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 The tcp_wrappers package provides small daemon programs which can
