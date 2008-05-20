@@ -2,13 +2,14 @@
 %define LIB_MINOR 7
 %define LIB_REL 6
 
-%define	major	%{LIB_MAJOR}
-%define libname	%mklibname wrap %{major}
+%define	major %{LIB_MAJOR}
+%define libname %mklibname wrap %{major}
+%define develname %mklibname wrap -d
 
 Summary: 	A security tool which acts as a wrapper for TCP daemons
 Name: 		tcp_wrappers
 Version: 	7.6
-Release: 	%mkrel 33
+Release: 	%mkrel 34
 Group: 		System/Servers	
 License: 	BSD
 URL:		ftp://ftp.porcupine.org/pub/security/index.html
@@ -29,6 +30,12 @@ Patch13:	tcp_wrappers-7.6-strerror.patch
 Patch14:	tcp_wrappers-7.6-ldflags.patch
 Patch15:	tcp_wrappers-7.6-fix_sig-bug141110.patch
 Patch16:	tcp_wrappers-7.6-162412.patch
+Patch17:	tcp_wrappers-7.6-220015.patch
+Patch18:	tcp_wrappers-7.6-restore_sigalarm.patch
+Patch19:	tcp_wrappers-7.6-siglongjmp.patch
+Patch20:	tcp_wrappers-7.6-sigchld.patch
+Patch21:	tcp_wrappers-7.6-196326.patch
+Patch22:	tcp_wrappers_7.6-249430.patch
 BuildConflicts:	%{name}-devel
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
@@ -51,17 +58,18 @@ rlogin, rsh, exec, tftp, talk and other network services.
 
 This package contains the shared tcp_wrappers library (libwrap).
 
-%package -n	%{libname}-devel
+%package -n	%{develname}
 Summary:	A security library which acts as a wrapper for TCP daemons
 Group:		Development/C
-Obsoletes:	%{name}-devel < %{version}-%{release}
-Provides:	%{name}-devel = %{version}-%{release}
-Obsoletes:	libwrap-devel < %{version}-%{release}
-Provides:	libwrap-devel = %{version}-%{release}
-Provides:       wrap-devel = %{version}-%{release}
 Requires:	%{libname} = %{version}-%{release}
+Provides:	libwrap-devel = %{version}-%{release}
+Provides:	%{name}-devel = %{version}-%{release}
+Provides:       wrap-devel = %{version}-%{release}
+Obsoletes:	libwrap-devel
+Obsoletes:	%{name}-devel
+Obsoletes:	%{mklibname wrap 0 -d}
 
-%description -n	%{libname}-devel
+%description -n	%{develname}
 The tcp_wrappers package provides small daemon programs which can
 monitor and filter incoming requests for systat, finger, ftp, telnet,
 rlogin, rsh, exec, tftp, talk and other network services.
@@ -88,6 +96,12 @@ its header files.
 %patch14 -p0 -b .ldflags
 %patch15 -p1 -b .fix_sig
 %patch16 -p1 -b .162412
+%patch17 -p1 -b .220015
+%patch18 -p1 -b .restore_sigalarm
+%patch19 -p1 -b .siglongjmp
+%patch20 -p1 -b .sigchld
+%patch21 -p1 -b .196326
+%patch22 -p1 -b .249430
 
 %build
 %serverbuild
@@ -96,7 +110,7 @@ its header files.
     MAJOR=%{LIB_MAJOR} MINOR=%{LIB_MINOR} REL=%{LIB_REL} linux
 
 %install
-[ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
+rm -rf %{buildroot}
 
 mkdir -p %{buildroot}{%{_includedir},%{_libdir},%{_sbindir},%{_mandir}/man{3,5,8}}
 
@@ -128,12 +142,8 @@ install -s -m755 try-from %{buildroot}%{_sbindir}
 
 %postun -n %{libname} -p /sbin/ldconfig
 
-%post -n %{libname}-devel -p /sbin/ldconfig
-
-%postun -n %{libname}-devel -p /sbin/ldconfig
-
 %clean
-[ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
+rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,755)
@@ -146,11 +156,9 @@ install -s -m755 try-from %{buildroot}%{_sbindir}
 %doc README
 %{_libdir}/*.so.*
 
-%files -n %{libname}-devel
+%files -n %{develname}
 %defattr(-,root,root)
 %doc DISCLAIMER
 %{_includedir}/*
 %{_libdir}/*.so
 %{_libdir}/*.a
-
-
