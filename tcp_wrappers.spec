@@ -9,7 +9,7 @@
 Summary: 	A security tool which acts as a wrapper for TCP daemons
 Name: 		tcp_wrappers
 Version: 	7.6
-Release: 	%mkrel 34
+Release: 	%mkrel 35
 Group: 		System/Servers	
 License: 	BSD
 URL:		ftp://ftp.porcupine.org/pub/security/index.html
@@ -65,7 +65,6 @@ Requires:	%{libname} = %{version}-%{release}
 Provides:	libwrap-devel = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
 Provides:       wrap-devel = %{version}-%{release}
-Obsoletes:	libwrap-devel
 Obsoletes:	%{name}-devel
 Obsoletes:	%{mklibname wrap 0 -d}
 
