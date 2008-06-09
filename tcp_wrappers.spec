@@ -137,9 +137,13 @@ install -s -m755 try-from %{buildroot}%{_sbindir}
 #(peroyvind): do it with a patch in stead now
 #ar d %{buildroot}%{_libdir}/libwrap.a setenv.o
 
+%if %mdkversion < 200900
 %post -n %{libname} -p /sbin/ldconfig
+%endif
 
+%if %mdkversion < 200900
 %postun -n %{libname} -p /sbin/ldconfig
+%endif
 
 %clean
 rm -rf %{buildroot}
