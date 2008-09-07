@@ -9,7 +9,7 @@
 Summary: 	A security tool which acts as a wrapper for TCP daemons
 Name: 		tcp_wrappers
 Version: 	7.6
-Release: 	%mkrel 36
+Release: 	%mkrel 37
 Group: 		System/Servers	
 License: 	BSD
 URL:		ftp://ftp.porcupine.org/pub/security/index.html
@@ -36,16 +36,19 @@ Patch19:	tcp_wrappers-7.6-siglongjmp.patch
 Patch20:	tcp_wrappers-7.6-sigchld.patch
 Patch21:	tcp_wrappers-7.6-196326.patch
 Patch22:	tcp_wrappers_7.6-249430.patch
+Patch100:	tcp_wrappers-bug41864.diff
 BuildConflicts:	%{name}-devel
 BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 The tcp_wrappers package provides small daemon programs which can
-monitor and filter incoming requests for systat, finger, ftp, telnet,
+monitor and filter incoming requests for systat, finger, FTP, telnet,
 rlogin, rsh, exec, tftp, talk and other network services.
 
 Install the tcp_wrappers program if you need a security tool for
 filtering incoming network services requests.
+
+This version also supports IPv6.
 
 %package -n	%{libname}
 Summary:	A security library which acts as a wrapper for TCP daemons
@@ -87,12 +90,12 @@ its header files.
 %patch5 -p1 -b .bug17847
 %patch6 -p1 -b .fixgethostbyname
 %patch7 -p1 -b .docu
-%patch9 -p0 -b .usagi-ipv6
+%patch9 -p1 -b .usagi-ipv6
 %patch10 -p1 -b .ume-ipv6
 %patch11 -p1 -b .shared
 %patch12 -p1 -b .sig
 %patch13 -p1 -b .strerror
-%patch14 -p0 -b .ldflags
+%patch14 -p1 -b .cflags
 %patch15 -p1 -b .fix_sig
 %patch16 -p1 -b .162412
 %patch17 -p1 -b .220015
@@ -102,9 +105,11 @@ its header files.
 %patch21 -p1 -b .196326
 %patch22 -p1 -b .249430
 
+%patch100 -p0 -b .bug41864
+
 %build
 %serverbuild
-%make OPTFLAGS="$CFLAGS -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR" \
+%make RPM_OPT_FLAGS="$CFLAGS -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR" \
     LDFLAGS="-pie" REAL_DAEMON_DIR=%{_sbindir} \
     MAJOR=%{LIB_MAJOR} MINOR=%{LIB_MINOR} REL=%{LIB_REL} linux
 
