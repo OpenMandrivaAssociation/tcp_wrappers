@@ -9,8 +9,8 @@
 Summary: 	A security tool which acts as a wrapper for TCP daemons
 Name: 		tcp_wrappers
 Version: 	7.6
-Release: 	%mkrel 40
-Group: 		System/Servers	
+Release: 	%mkrel 41
+Group: 		System/Servers
 License: 	BSD
 URL:		ftp://ftp.porcupine.org/pub/security/index.html
 Source0:        http://ftp.porcupine.org/pub/security/%{name}_%{version}.tar.bz2
@@ -116,7 +116,11 @@ its header files.
 %install
 rm -rf %{buildroot}
 
-mkdir -p %{buildroot}{%{_includedir},%{_libdir},%{_sbindir},%{_mandir}/man{3,5,8}}
+install -d %{buildroot}%{_includedir}
+install -d %{buildroot}/%{_lib}
+install -d %{buildroot}%{_libdir}
+install -d %{buildroot}%{_sbindir}
+install -d %{buildroot}%{_mandir}/man{3,5,8}
 
 install -m644 hosts_access.3 %{buildroot}%{_mandir}/man3
 install -m644 hosts_access.5 hosts_options.5 %{buildroot}%{_mandir}/man5
@@ -124,9 +128,9 @@ ln hosts_access.5 %{buildroot}%{_mandir}/man5/hosts.allow.5
 ln hosts_access.5 %{buildroot}%{_mandir}/man5/hosts.deny.5
 install -m644 tcpd.8 tcpdchk.8 tcpdmatch.8 %{buildroot}%{_mandir}/man8
 
-install -m755 libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}%{_libdir}/
-ln -s libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}%{_libdir}/libwrap.so.%{LIB_MAJOR}
-ln -s libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}%{_libdir}/libwrap.so
+install -m755 libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}/%{_lib}/
+ln -s libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}/%{_lib}/libwrap.so.%{LIB_MAJOR}
+ln -s /%{_lib}/libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}%{_libdir}/libwrap.so
 
 install -m644 libwrap.a %{buildroot}%{_libdir}
 install -m644 tcpd.h %{buildroot}%{_includedir}
@@ -162,7 +166,7 @@ rm -rf %{buildroot}
 %files -n %{libname}
 %defattr(-,root,root)
 %doc README
-%{_libdir}/*.so.*
+/%{_lib}/*.so.*
 
 %files -n %{develname}
 %defattr(-,root,root)
