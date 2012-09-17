@@ -107,7 +107,7 @@ its header files.
 %patch100 -p0 -b .bug41864
 
 %build
-%serverbuild_hardened
+%serverbuild
 %make RPM_OPT_FLAGS="$CFLAGS -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR" \
     LDFLAGS="%{ldflags} -pie" REAL_DAEMON_DIR=%{_sbindir} \
     MAJOR=%{LIB_MAJOR} MINOR=%{LIB_MINOR} REL=%{LIB_REL} linux
