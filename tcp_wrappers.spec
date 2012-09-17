@@ -130,7 +130,8 @@ install -m755 libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}/%{_li
 ln -s libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}/%{_lib}/libwrap.so.%{LIB_MAJOR}
 ln -s /%{_lib}/libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}%{_libdir}/libwrap.so
 
-install -m644 libwrap.a %{buildroot}%{_libdir}
+# (tpg) do not install it
+#install -m644 libwrap.a %{buildroot}%{_libdir}
 install -m644 tcpd.h %{buildroot}%{_includedir}
 
 install -s -m755 safe_finger %{buildroot}%{_sbindir}
@@ -138,6 +139,7 @@ install -s -m755 tcpd %{buildroot}%{_sbindir}
 install -s -m755 tcpdchk %{buildroot}%{_sbindir}
 install -s -m755 tcpdmatch %{buildroot}%{_sbindir}
 install -s -m755 try-from %{buildroot}%{_sbindir}
+
 
 # (fg) 20000905 FIXME FIXME FIXME: setenv in libwrap.a is rather strange for
 # one, so I remove it here - but will it break anything else?
