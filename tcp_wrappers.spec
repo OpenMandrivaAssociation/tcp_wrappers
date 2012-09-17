@@ -6,14 +6,14 @@
 %define libname %mklibname wrap %{major}
 %define develname %mklibname wrap -d
 
-Summary: 	A security tool which acts as a wrapper for TCP daemons
-Name: 		tcp_wrappers
-Version: 	7.6
-Release: 	%mkrel 42
-Group: 		System/Servers
-License: 	BSD
+Summary:	A security tool which acts as a wrapper for TCP daemons
+Name:		tcp_wrappers
+Version:	7.6
+Release:	43
+Group:		System/Servers
+License:	BSD
 URL:		ftp://ftp.porcupine.org/pub/security/index.html
-Source0:        http://ftp.porcupine.org/pub/security/%{name}_%{version}.tar.bz2
+Source0:	http://ftp.porcupine.org/pub/security/%{name}_%{version}.tar.bz2
 Patch0:		tcpw7.2-config.patch
 Patch1:		tcpw7.2-setenv.patch
 Patch2:		tcpw7.6-netgroup.patch
@@ -38,7 +38,6 @@ Patch21:	tcp_wrappers-7.6-196326.patch
 Patch22:	tcp_wrappers_7.6-249430.patch
 Patch100:	tcp_wrappers-bug41864.diff
 BuildConflicts:	%{name}-devel
-BuildRoot: 	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 The tcp_wrappers package provides small daemon programs which can
@@ -50,9 +49,9 @@ filtering incoming network services requests.
 
 This version also supports IPv6.
 
-%package -n	%{libname}
+%package -n %{libname}
 Summary:	A security library which acts as a wrapper for TCP daemons
-Group:          System/Libraries
+Group:		System/Libraries
 
 %description -n	%{libname}
 The tcp_wrappers package provides small daemon programs which can
@@ -61,14 +60,14 @@ rlogin, rsh, exec, tftp, talk and other network services.
 
 This package contains the shared tcp_wrappers library (libwrap).
 
-%package -n	%{develname}
+%package -n %{develname}
 Summary:	A security library which acts as a wrapper for TCP daemons
 Group:		Development/C
 Requires:	%{libname} = %{version}-%{release}
 Provides:	libwrap-devel = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
-Provides:       wrap-devel = %{version}-%{release}
-Obsoletes:	%{name}-devel
+Provides:	wrap-devel = %{version}-%{release}
+Obsoletes:	%{name}-devel < %{version}-%{release}
 Obsoletes:	%{mklibname wrap 0 -d}
 
 %description -n	%{develname}
@@ -108,13 +107,12 @@ its header files.
 %patch100 -p0 -b .bug41864
 
 %build
-%serverbuild
+%serverbuild_hardened
 %make RPM_OPT_FLAGS="$CFLAGS -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR" \
     LDFLAGS="%{ldflags} -pie" REAL_DAEMON_DIR=%{_sbindir} \
     MAJOR=%{LIB_MAJOR} MINOR=%{LIB_MINOR} REL=%{LIB_REL} linux
 
 %install
-rm -rf %{buildroot}
 
 install -d %{buildroot}%{_includedir}
 install -d %{buildroot}/%{_lib}
@@ -146,31 +144,16 @@ install -s -m755 try-from %{buildroot}%{_sbindir}
 #(peroyvind): do it with a patch in stead now
 #ar d %{buildroot}%{_libdir}/libwrap.a setenv.o
 
-%if %mdkversion < 200900
-%post -n %{libname} -p /sbin/ldconfig
-%endif
-
-%if %mdkversion < 200900
-%postun -n %{libname} -p /sbin/ldconfig
-%endif
-
-%clean
-rm -rf %{buildroot}
-
 %files
-%defattr(-,root,root,755)
 %doc BLURB CHANGES README* DISCLAIMER Banners.Makefile
 %{_sbindir}/*
 %{_mandir}/man*/*
 
 %files -n %{libname}
-%defattr(-,root,root)
 %doc README
-/%{_lib}/*.so.*
+/%{_lib}/*.so.%{major}*
 
 %files -n %{develname}
-%defattr(-,root,root)
 %doc DISCLAIMER
 %{_includedir}/*
 %{_libdir}/*.so
-%{_libdir}/*.a
