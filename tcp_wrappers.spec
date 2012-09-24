@@ -6,10 +6,12 @@
 %define libname %mklibname wrap %{major}
 %define develname %mklibname wrap -d
 
+%bcond_without	uclibc
+
 Summary:	A security tool which acts as a wrapper for TCP daemons
 Name:		tcp_wrappers
 Version:	7.6
-Release:	44
+Release:	45
 Group:		System/Servers
 License:	BSD
 URL:		ftp://ftp.porcupine.org/pub/security/index.html
@@ -37,7 +39,12 @@ Patch20:	tcp_wrappers-7.6-sigchld.patch
 Patch21:	tcp_wrappers-7.6-196326.patch
 Patch22:	tcp_wrappers_7.6-249430.patch
 Patch100:	tcp_wrappers-bug41864.diff
+Patch101:	tcp_wrappers-7.6-netgroup2.patch
+PAtch102:	tcp_wrappers-7.6-dont-hardcode-compiler.patch
 BuildConflicts:	%{name}-devel
+%if %{with uclibc}
+BuildRequires:	uClibc-devel >= 0.9.33.2-9
+%endif
 
 %description
 The tcp_wrappers package provides small daemon programs which can
@@ -60,10 +67,24 @@ rlogin, rsh, exec, tftp, talk and other network services.
 
 This package contains the shared tcp_wrappers library (libwrap).
 
+%package -n	uclibc-%{libname}
+Summary:	A security library which acts as a wrapper for TCP daemons (uClibc linked)
+Group:		System/Libraries
+
+%description -n	uclibc-%{libname}
+The tcp_wrappers package provides small daemon programs which can
+monitor and filter incoming requests for systat, finger, ftp, telnet,
+rlogin, rsh, exec, tftp, talk and other network services.
+
+This package contains the shared tcp_wrappers library (libwrap).
+
 %package -n %{develname}
 Summary:	A security library which acts as a wrapper for TCP daemons
 Group:		Development/C
 Requires:	%{libname} = %{version}-%{release}
+%if %{with uclibc}
+Requires:	uclibc-%{libname} = %{version}-%{release}
+%endif
 Provides:	libwrap-devel = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
 Provides:	wrap-devel = %{version}-%{release}
@@ -105,11 +126,21 @@ its header files.
 %patch22 -p1 -b .249430
 
 %patch100 -p0 -b .bug41864
+%patch101 -p1 -b .netgroup2~
+%patch102 -p1 -b .cc~
 
 %build
-%serverbuild
-%make RPM_OPT_FLAGS="$CFLAGS -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR" \
-    LDFLAGS="%{ldflags} -pie" REAL_DAEMON_DIR=%{_sbindir} \
+%if %{with uclibc}
+%make RPM_OPT_FLAGS="%{uclibc_cflags} -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR" \
+    CC=%{uclibc_cc} NETGROUP="" LDFLAGS="%{ldflags} -pie" REAL_DAEMON_DIR=%{_sbindir} \
+    MAJOR=%{LIB_MAJOR} MINOR=%{LIB_MINOR} REL=%{LIB_REL} linux
+mkdir -p uclibc
+mv libwrap.so* uclibc
+make clean
+%endif
+
+%make RPM_OPT_FLAGS="%{optflags} -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR" \
+    LDFLAGS="%{ldflags}" NETGROUP=-DNETGROUP REAL_DAEMON_DIR=%{_sbindir} \
     MAJOR=%{LIB_MAJOR} MINOR=%{LIB_MINOR} REL=%{LIB_REL} linux
 
 %install
@@ -126,9 +157,15 @@ ln hosts_access.5 %{buildroot}%{_mandir}/man5/hosts.allow.5
 ln hosts_access.5 %{buildroot}%{_mandir}/man5/hosts.deny.5
 install -m644 tcpd.8 tcpdchk.8 tcpdmatch.8 %{buildroot}%{_mandir}/man8
 
-install -m755 libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}/%{_lib}/
-ln -s libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}/%{_lib}/libwrap.so.%{LIB_MAJOR}
-ln -s /%{_lib}/libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}%{_libdir}/libwrap.so
+install -d %{buildroot}%{uclibc_root}{/%{_lib},%{_libdir}}
+cp -a libwrap.so.* %{buildroot}/%{_lib}
+ln -srf %{buildroot}/%{_lib}/libwrap.so.%{LIB_MAJOR}.%{LIB_REL} %{buildroot}%{_libdir}/libwrap.so
+
+%if %{with uclibc}
+install -d %{buildroot}%{uclibc_root}{/%{_lib},%{_libdir}}
+cp -a uclibc/libwrap.so.* %{buildroot}%{uclibc_root}/%{_lib}
+ln -srf %{buildroot}/%{_lib}/libwrap.so.%{LIB_MAJOR}.%{LIB_REL} %{buildroot}%{uclibc_root}%{_libdir}/libwrap.so
+%endif
 
 # (tpg) do not install it
 #install -m644 libwrap.a %{buildroot}%{_libdir}
@@ -155,7 +192,15 @@ install -s -m755 try-from %{buildroot}%{_sbindir}
 %doc README
 /%{_lib}/*.so.%{major}*
 
+%if %{with uclibc}
+%files -n uclibc-%{libname}
+%{uclibc_root}/%{_lib}/*.so.%{major}*
+%endif
+
 %files -n %{develname}
 %doc DISCLAIMER
 %{_includedir}/*
 %{_libdir}/*.so
+%if %{with uclibc}
+%{uclibc_root}%{_libdir}/*.so
+%endif
