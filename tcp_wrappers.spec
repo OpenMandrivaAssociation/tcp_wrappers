@@ -159,12 +159,12 @@ install -m644 tcpd.8 tcpdchk.8 tcpdmatch.8 %{buildroot}%{_mandir}/man8
 
 install -d %{buildroot}%{uclibc_root}{/%{_lib},%{_libdir}}
 cp -a libwrap.so.* %{buildroot}/%{_lib}
-ln -srf %{buildroot}/%{_lib}/libwrap.so.%{LIB_MAJOR}.%{LIB_REL} %{buildroot}%{_libdir}/libwrap.so
+ln -srf %{buildroot}/%{_lib}/libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}%{_libdir}/libwrap.so
 
 %if %{with uclibc}
 install -d %{buildroot}%{uclibc_root}{/%{_lib},%{_libdir}}
 cp -a uclibc/libwrap.so.* %{buildroot}%{uclibc_root}/%{_lib}
-ln -srf %{buildroot}/%{_lib}/libwrap.so.%{LIB_MAJOR}.%{LIB_REL} %{buildroot}%{uclibc_root}%{_libdir}/libwrap.so
+ln -srf %{buildroot}%{uclibc_root}/%{_lib}/libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}%{uclibc_root}%{_libdir}/libwrap.so
 %endif
 
 # (tpg) do not install it
