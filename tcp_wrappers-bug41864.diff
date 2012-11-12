@@ -1,0 +1,11 @@
+--- misc.c	2008-09-07 11:20:17.000000000 +0200
++++ misc.c.oden	2008-09-07 11:22:02.000000000 +0200
+@@ -33,7 +33,7 @@ FILE   *fp;
+     int     got;
+     char   *start = ptr;
+ 
+-    while (fgets(ptr, len, fp)) {
++    while (len>1 && fgets(ptr, len, fp)) {
+ 	got = strlen(ptr);
+ 	if (got >= 1 && ptr[got - 1] == '\n') {
+ 	    tcpd_context.line++;

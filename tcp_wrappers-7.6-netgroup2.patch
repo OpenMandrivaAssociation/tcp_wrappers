@@ -1,0 +1,74 @@
+--- tcp_wrappers_7.6/Makefile~	2012-09-24 15:42:54.317626206 +0200
++++ tcp_wrappers_7.6/Makefile	2012-09-24 15:44:26.573649538 +0200
+@@ -151,7 +151,7 @@ netbsd:
+ linux:
+ 	@make REAL_DAEMON_DIR=$(REAL_DAEMON_DIR) STYLE=$(STYLE) \
+ 	LIBS="-lnsl" RANLIB=ranlib ARFLAGS=rv AUX_OBJ=weak_symbols.o \
+-	NETGROUP="-DNETGROUP" TLI= EXTRA_CFLAGS="$(RPM_OPT_FLAGS)  -fPIC -DPIC -D_REENTRANT -DSYS_ERRLIST_DEFINED -DBROKEN_SO_LINGER -DINET6=1 -Dss_family=__ss_family -Dss_len=__ss_len -DHAVE_WEAKSYMS" all
++	NETGROUP="$(NETGROUP)" TLI= EXTRA_CFLAGS="$(RPM_OPT_FLAGS)  -fPIC -DPIC -D_REENTRANT -DSYS_ERRLIST_DEFINED -DBROKEN_SO_LINGER -DINET6=1 -Dss_family=__ss_family -Dss_len=__ss_len -DHAVE_WEAKSYMS" all
+ 
+ linux-old:
+ 	@make REAL_DAEMON_DIR=$(REAL_DAEMON_DIR) STYLE=$(STYLE) \
+@@ -484,7 +484,7 @@ AR	= ar
+ # If your system supports NIS or YP-style netgroups, enable the following
+ # macro definition. Netgroups are used only for host access control.
+ #
+-#NETGROUP= -DNETGROUP
++NETGROUP= -DNETGROUP
+ 
+ ###############################################################
+ # System dependencies: whether or not your system has vsyslog()
+@@ -778,7 +778,7 @@ tidy:	clean
+ lint: tcpd_lint miscd_lint match_lint chk_lint
+ 
+ tcpd_lint:
+-	lint -DFACILITY=LOG_MAIL -DHOSTS_ACCESS -DPARANOID -DNETGROUP \
++	lint -DFACILITY=LOG_MAIL -DHOSTS_ACCESS -DPARANOID $(NETGROUP) \
+ 	-DGETPEERNAME_BUG -DDAEMON_UMASK=022 -DSEVERITY=$(SEVERITY) \
+ 	$(TABLES) -DKILL_IP_OPTIONS -DPROCESS_OPTIONS \
+ 	-DRFC931_TIMEOUT=$(RFC931_TIMEOUT) -DALWAYS_RFC931 \
+@@ -790,7 +790,7 @@ tcpd_lint:
+ 	diag.c myvsyslog.c percent_m.c
+ 
+ miscd_lint:
+-	lint -DFACILITY=LOG_MAIL -DHOSTS_ACCESS -DPARANOID -DNETGROUP \
++	lint -DFACILITY=LOG_MAIL -DHOSTS_ACCESS -DPARANOID $(NETGROUP) \
+ 	-DGETPEERNAME_BUG -DDAEMON_UMASK=022 -DSEVERITY=$(SEVERITY) \
+ 	$(TABLES) -DKILL_IP_OPTIONS -DPROCESS_OPTIONS \
+ 	-DRFC931_TIMEOUT=$(RFC931_TIMEOUT) -DALWAYS_RFC931 \
+@@ -803,7 +803,7 @@ miscd_lint:
+ 
+ match_lint:
+ 	lint -DFACILITY=LOG_MAIL -DSEVERITY=$(SEVERITY) -DHOSTS_ACCESS \
+-	-DPARANOID $(TABLES) -DNETGROUP -DPROCESS_OPTIONS -DRFC931_TIMEOUT=10 \
++	-DPARANOID $(TABLES) $(NETGROUP -DPROCESS_OPTIONS -DRFC931_TIMEOUT=10 \
+ 	-DREAL_DAEMON_DIR=\"$(REAL_DAEMON_DIR)\" \
+ 	-Dvsyslog=myvsyslog \
+ 	tcpdmatch.c hosts_access.c eval.c percent_x.c options.c workarounds.c \
+@@ -812,7 +812,7 @@ match_lint:
+ 
+ chk_lint:
+ 	lint -DFACILITY=LOG_MAIL -DSEVERITY=$(SEVERITY) -DHOSTS_ACCESS \
+-	-DPARANOID $(TABLES) -DNETGROUP -DPROCESS_OPTIONS -DRFC931_TIMEOUT=10 \
++	-DPARANOID $(TABLES) $(NETGROUP) -DPROCESS_OPTIONS -DRFC931_TIMEOUT=10 \
+ 	-DREAL_DAEMON_DIR=\"$(REAL_DAEMON_DIR)\" \
+ 	-Dvsyslog=myvsyslog \
+ 	tcpdchk.c eval.c percent_x.c options.c update.c workarounds.c \
+@@ -824,7 +824,7 @@ printfck:
+ 	shell_cmd.c refuse.c rfc931.c eval.c percent_x.c clean_exit.c \
+ 	options.c setenv.c fix_options.c workarounds.c update.c misc.c \
+ 	diag.c myvsyslog.c percent_m.c >aap.c
+-	lint -DFACILITY=LOG_MAIL -DHOSTS_ACCESS -DPARANOID -DNETGROUP \
++	lint -DFACILITY=LOG_MAIL -DHOSTS_ACCESS -DPARANOID $(NETGROUP) \
+ 	-DGETPEERNAME_BUG -DDAEMON_UMASK=022 -DSEVERITY=$(SEVERITY) \
+ 	$(TABLES) -DKILL_IP_OPTIONS -DPROCESS_OPTIONS \
+ 	-DRFC931_TIMEOUT=$(RFC931_TIMEOUT) -DALWAYS_RFC931 \
+@@ -834,7 +834,7 @@ printfck:
+ 	setenv.c misc.c diag.c myvsyslog.c percent_m.c inetcf.c scaffold.c \
+ 	>aap.c
+ 	lint -DFACILITY=LOG_MAIL -DSEVERITY=$(SEVERITY) -DHOSTS_ACCESS \
+-	-DPARANOID $(TABLES) -DNETGROUP -DPROCESS_OPTIONS -DRFC931_TIMEOUT=10 \
++	-DPARANOID $(TABLES) $(NETGROUP) -DPROCESS_OPTIONS -DRFC931_TIMEOUT=10 \
+ 	-Dvsyslog=myvsyslog -DREAL_DAEMON_DIR=\"$(REAL_DAEMON_DIR)\"
+ 
+ # Internal compilation dependencies.

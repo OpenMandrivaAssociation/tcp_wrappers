@@ -1,0 +1,19 @@
+--- tcp_wrappers_7.6/Makefile~	2012-09-24 15:52:52.135406783 +0200
++++ tcp_wrappers_7.6/Makefile	2012-09-24 15:53:03.683557064 +0200
+@@ -1,5 +1,7 @@
+ # @(#) Makefile 1.23 97/03/21 19:27:20
+ 
++CC ?= gcc
++
+ what:
+ 	@echo
+ 	@echo "Usage: edit the REAL_DAEMON_DIR definition in the Makefile then:"
+@@ -726,7 +728,7 @@ $(LIB):	$(LIB_OBJ)
+ 	-$(RANLIB) $(LIB)
+ 
+ $(SHLIB): $(LIB_OBJ)
+-	gcc -shared -fPIC -Wl,-soname -Wl,$(SHLIB).$(MAJOR) \
++	$(CC) -shared -fPIC -Wl,-soname -Wl,$(SHLIB).$(MAJOR) \
+ 		-o $(SHLIB).$(MAJOR).$(MINOR).$(REL) $^ $(LIBS)
+ 	ln -s $(SHLIB).$(MAJOR).$(MINOR).$(REL) $(SHLIB).$(MAJOR)
+ 	ln -s $(SHLIB).$(MAJOR).$(MINOR).$(REL) $(SHLIB)
