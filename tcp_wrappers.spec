@@ -204,3 +204,28 @@ install -s -m755 try-from %{buildroot}%{_sbindir}
 %if %{with uclibc}
 %{uclibc_root}%{_libdir}/*.so
 %endif
+
+%changelog
+* Wed Oct 24 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 7.6-45
++ Revision: 819673
+- fix target path of .so symlink
+- do uClibc build
+- don't use %%serverbuild_hardened
+
+* Sun Sep 23 2012 Tomasz Pawel Gajc <tpg@mandriva.org> 7.6-44
++ Revision: 817356
+- reupload becuase buildsystem is a bad joke
+- rebuild for new era
+- spec file clean
+
+* Fri May 06 2011 Oden Eriksson <oeriksson@mandriva.com> 7.6-42
++ Revision: 670670
+- mass rebuild
+
+* Sun Nov 28 2010 Oden Eriksson <oeriksson@mandriva.com> 7.6-41mdv2011.0
++ Revision: 602296
+- fix #61800 (Move lilbwrap.so.* from /usr/lib to /lib)
+
+* Sun Mar 14 2010 Oden Eriksson <oeriksson@mandriva.com> 7.6-40mdv2010.1
++ Revision: 519074
+- rebuild
