@@ -11,7 +11,7 @@
 Summary:	A security tool which acts as a wrapper for TCP daemons
 Name:		tcp_wrappers
 Version:	7.6
-Release:	45
+Release:	46
 Group:		System/Servers
 License:	BSD
 URL:		ftp://ftp.porcupine.org/pub/security/index.html
@@ -206,6 +206,9 @@ install -s -m755 try-from %{buildroot}%{_sbindir}
 %endif
 
 %changelog
+* Thu Dec 13 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 7.6-46
+- rebuild on ABF
+
 * Wed Oct 24 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 7.6-45
 + Revision: 819673
 - fix target path of .so symlink
