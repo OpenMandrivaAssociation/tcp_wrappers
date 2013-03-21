@@ -139,7 +139,7 @@ mv libwrap.so* uclibc
 make clean
 %endif
 
-%make RPM_OPT_FLAGS="%{optflags} -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR" \
+%make CC=%{__cc} RPM_OPT_FLAGS="%{optflags} -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR" \
     LDFLAGS="%{ldflags}" NETGROUP=-DNETGROUP REAL_DAEMON_DIR=%{_sbindir} \
     MAJOR=%{LIB_MAJOR} MINOR=%{LIB_MINOR} REL=%{LIB_REL} linux
 
@@ -171,11 +171,11 @@ ln -srf %{buildroot}%{uclibc_root}/%{_lib}/libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.
 #install -m644 libwrap.a %{buildroot}%{_libdir}
 install -m644 tcpd.h %{buildroot}%{_includedir}
 
-install -s -m755 safe_finger %{buildroot}%{_sbindir}
-install -s -m755 tcpd %{buildroot}%{_sbindir}
-install -s -m755 tcpdchk %{buildroot}%{_sbindir}
-install -s -m755 tcpdmatch %{buildroot}%{_sbindir}
-install -s -m755 try-from %{buildroot}%{_sbindir}
+install -m755 safe_finger %{buildroot}%{_sbindir}
+install -m755 tcpd %{buildroot}%{_sbindir}
+install -m755 tcpdchk %{buildroot}%{_sbindir}
+install -m755 tcpdmatch %{buildroot}%{_sbindir}
+install -m755 try-from %{buildroot}%{_sbindir}
 
 
 # (fg) 20000905 FIXME FIXME FIXME: setenv in libwrap.a is rather strange for
