@@ -40,7 +40,8 @@ Patch21:	tcp_wrappers-7.6-196326.patch
 Patch22:	tcp_wrappers_7.6-249430.patch
 Patch100:	tcp_wrappers-bug41864.diff
 Patch101:	tcp_wrappers-7.6-netgroup2.patch
-PAtch102:	tcp_wrappers-7.6-dont-hardcode-compiler.patch
+Patch102:	tcp_wrappers-7.6-dont-hardcode-compiler.patch
+Patch103:	tcp_wrappers-7.6-clang.patch
 BuildConflicts:	%{name}-devel
 %if %{with uclibc}
 BuildRequires:	uClibc-devel >= 0.9.33.2-9
@@ -128,6 +129,7 @@ its header files.
 %patch100 -p0 -b .bug41864
 %patch101 -p1 -b .netgroup2~
 %patch102 -p1 -b .cc~
+%patch103 -p1 -b .clang
 
 %build
 %if %{with uclibc}

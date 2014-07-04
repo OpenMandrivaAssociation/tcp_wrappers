@@ -1,0 +1,14 @@
+Index: tcp-wrappers-7.6.q/fix_options.c
+===================================================================
+--- tcp-wrappers-7.6.q.orig/fix_options.c	2013-05-30 14:41:20.000000000 +0200
++++ tcp-wrappers-7.6.q/fix_options.c	2013-05-30 14:43:48.297931408 +0200
+@@ -32,7 +32,7 @@
+ 
+ /* fix_options - get rid of IP-level socket options */
+ 
+-fix_options(request)
++void fix_options(request)
+ struct request_info *request;
+ {
+ #ifdef IP_OPTIONS
+
