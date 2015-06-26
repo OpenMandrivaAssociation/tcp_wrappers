@@ -11,7 +11,7 @@
 Summary:	A security tool which acts as a wrapper for TCP daemons
 Name:		tcp_wrappers
 Version:	7.6
-Release:	54
+Release:	55
 Group:		System/Servers
 License:	BSD
 URL:		ftp://ftp.porcupine.org/pub/security/index.html
@@ -68,6 +68,7 @@ rlogin, rsh, exec, tftp, talk and other network services.
 
 This package contains the shared tcp_wrappers library (libwrap).
 
+%if %{with uclibc}
 %package -n	uclibc-%{libname}
 Summary:	A security library which acts as a wrapper for TCP daemons (uClibc linked)
 Group:		System/Libraries
@@ -79,13 +80,29 @@ rlogin, rsh, exec, tftp, talk and other network services.
 
 This package contains the shared tcp_wrappers library (libwrap).
 
+%package -n uclibc-%{develname}
+Summary:	A security library which acts as a wrapper for TCP daemons
+Group:		Development/C
+Requires:	uclibc-%{libname} = %{EVRD}
+Provides:	uclibc-libwrap-devel = %{EVRD}
+Provides:	uclibc-%{name}-devel = %{EVRD}
+Provides:	uclibc-wrap-devel = %{EVRD}
+Requires:	%{develname} = %{EVRD}
+Conflicts:	%{develname} < 7.6-55
+
+%description -n	uclibc-%{develname}
+The tcp_wrappers package provides small daemon programs which can
+monitor and filter incoming requests for systat, finger, ftp, telnet,
+rlogin, rsh, exec, tftp, talk and other network services.
+
+This package contains the static tcp_wrappers library (libwrap) and
+its header files.
+%endif
+
 %package -n %{develname}
 Summary:	A security library which acts as a wrapper for TCP daemons
 Group:		Development/C
 Requires:	%{libname} = %{version}-%{release}
-%if %{with uclibc}
-Requires:	uclibc-%{libname} = %{version}-%{release}
-%endif
 Provides:	libwrap-devel = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
 Provides:	wrap-devel = %{version}-%{release}
@@ -197,40 +214,12 @@ install -m755 try-from %{buildroot}%{_sbindir}
 %if %{with uclibc}
 %files -n uclibc-%{libname}
 %{uclibc_root}/%{_lib}/*.so.%{major}*
+
+%files -n uclibc-%{develname}
+%{uclibc_root}%{_libdir}/*.so
 %endif
 
 %files -n %{develname}
 %doc DISCLAIMER
 %{_includedir}/*
 %{_libdir}/*.so
-%if %{with uclibc}
-%{uclibc_root}%{_libdir}/*.so
-%endif
-
-%changelog
-* Thu Dec 13 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 7.6-46
-- rebuild on ABF
-
-* Wed Oct 24 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 7.6-45
-+ Revision: 819673
-- fix target path of .so symlink
-- do uClibc build
-- don't use %%serverbuild_hardened
-
-* Sun Sep 23 2012 Tomasz Pawel Gajc <tpg@mandriva.org> 7.6-44
-+ Revision: 817356
-- reupload becuase buildsystem is a bad joke
-- rebuild for new era
-- spec file clean
-
-* Fri May 06 2011 Oden Eriksson <oeriksson@mandriva.com> 7.6-42
-+ Revision: 670670
-- mass rebuild
-
-* Sun Nov 28 2010 Oden Eriksson <oeriksson@mandriva.com> 7.6-41mdv2011.0
-+ Revision: 602296
-- fix #61800 (Move lilbwrap.so.* from /usr/lib to /lib)
-
-* Sun Mar 14 2010 Oden Eriksson <oeriksson@mandriva.com> 7.6-40mdv2010.1
-+ Revision: 519074
-- rebuild
