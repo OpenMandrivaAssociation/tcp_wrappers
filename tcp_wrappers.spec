@@ -6,12 +6,12 @@
 %define libname %mklibname wrap %{major}
 %define develname %mklibname wrap -d
 
-%bcond_without	uclibc
+%bcond_with	uclibc
 
 Summary:	A security tool which acts as a wrapper for TCP daemons
 Name:		tcp_wrappers
 Version:	7.6
-Release:	56
+Release:	57
 Group:		System/Servers
 License:	BSD
 URL:		ftp://ftp.porcupine.org/pub/security/index.html
