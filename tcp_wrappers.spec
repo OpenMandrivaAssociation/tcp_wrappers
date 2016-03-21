@@ -2,11 +2,10 @@
 %define LIB_MINOR 7
 %define LIB_REL 6
 
+%define _disable_lto 1
 %define	major %{LIB_MAJOR}
 %define libname %mklibname wrap %{major}
 %define develname %mklibname wrap -d
-
-%bcond_with	uclibc
 
 Summary:	A security tool which acts as a wrapper for TCP daemons
 Name:		tcp_wrappers
@@ -43,9 +42,6 @@ Patch101:	tcp_wrappers-7.6-netgroup2.patch
 Patch102:	tcp_wrappers-7.6-dont-hardcode-compiler.patch
 Patch103:	tcp_wrappers-7.6-clang.patch
 BuildConflicts:	%{name}-devel
-%if %{with uclibc}
-BuildRequires:	uClibc-devel >= 0.9.33.2-9
-%endif
 
 %description
 The tcp_wrappers package provides small daemon programs which can
@@ -67,37 +63,6 @@ monitor and filter incoming requests for systat, finger, ftp, telnet,
 rlogin, rsh, exec, tftp, talk and other network services.
 
 This package contains the shared tcp_wrappers library (libwrap).
-
-%if %{with uclibc}
-%package -n	uclibc-%{libname}
-Summary:	A security library which acts as a wrapper for TCP daemons (uClibc linked)
-Group:		System/Libraries
-
-%description -n	uclibc-%{libname}
-The tcp_wrappers package provides small daemon programs which can
-monitor and filter incoming requests for systat, finger, ftp, telnet,
-rlogin, rsh, exec, tftp, talk and other network services.
-
-This package contains the shared tcp_wrappers library (libwrap).
-
-%package -n uclibc-%{develname}
-Summary:	A security library which acts as a wrapper for TCP daemons
-Group:		Development/C
-Requires:	uclibc-%{libname} = %{EVRD}
-Provides:	uclibc-libwrap-devel = %{EVRD}
-Provides:	uclibc-%{name}-devel = %{EVRD}
-Provides:	uclibc-wrap-devel = %{EVRD}
-Requires:	%{develname} = %{EVRD}
-Conflicts:	%{develname} < 7.6-55
-
-%description -n	uclibc-%{develname}
-The tcp_wrappers package provides small daemon programs which can
-monitor and filter incoming requests for systat, finger, ftp, telnet,
-rlogin, rsh, exec, tftp, talk and other network services.
-
-This package contains the static tcp_wrappers library (libwrap) and
-its header files.
-%endif
 
 %package -n %{develname}
 Summary:	A security library which acts as a wrapper for TCP daemons
@@ -149,15 +114,6 @@ its header files.
 %patch103 -p1 -b .clang
 
 %build
-%if %{with uclibc}
-%make RPM_OPT_FLAGS="%{uclibc_cflags} -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR" \
-    CC=%{uclibc_cc} NETGROUP="" LDFLAGS="%{ldflags} -pie" REAL_DAEMON_DIR=%{_sbindir} \
-    MAJOR=%{LIB_MAJOR} MINOR=%{LIB_MINOR} REL=%{LIB_REL} linux
-mkdir -p uclibc
-mv libwrap.so* uclibc
-make clean
-%endif
-
 %make CC=%{__cc} RPM_OPT_FLAGS="%{optflags} -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR" \
     LDFLAGS="%{ldflags}" NETGROUP=-DNETGROUP REAL_DAEMON_DIR=%{_sbindir} \
     MAJOR=%{LIB_MAJOR} MINOR=%{LIB_MINOR} REL=%{LIB_REL} linux
@@ -180,12 +136,6 @@ install -d %{buildroot}%{uclibc_root}{/%{_lib},%{_libdir}}
 cp -a libwrap.so.* %{buildroot}/%{_lib}
 ln -srf %{buildroot}/%{_lib}/libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}%{_libdir}/libwrap.so
 
-%if %{with uclibc}
-install -d %{buildroot}%{uclibc_root}{/%{_lib},%{_libdir}}
-cp -a uclibc/libwrap.so.* %{buildroot}%{uclibc_root}/%{_lib}
-ln -srf %{buildroot}%{uclibc_root}/%{_lib}/libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}%{uclibc_root}%{_libdir}/libwrap.so
-%endif
-
 # (tpg) do not install it
 #install -m644 libwrap.a %{buildroot}%{_libdir}
 install -m644 tcpd.h %{buildroot}%{_includedir}
@@ -195,7 +145,6 @@ install -m755 tcpd %{buildroot}%{_sbindir}
 install -m755 tcpdchk %{buildroot}%{_sbindir}
 install -m755 tcpdmatch %{buildroot}%{_sbindir}
 install -m755 try-from %{buildroot}%{_sbindir}
-
 
 # (fg) 20000905 FIXME FIXME FIXME: setenv in libwrap.a is rather strange for
 # one, so I remove it here - but will it break anything else?
@@ -210,14 +159,6 @@ install -m755 try-from %{buildroot}%{_sbindir}
 %files -n %{libname}
 %doc README
 /%{_lib}/*.so.%{major}*
-
-%if %{with uclibc}
-%files -n uclibc-%{libname}
-%{uclibc_root}/%{_lib}/*.so.%{major}*
-
-%files -n uclibc-%{develname}
-%{uclibc_root}%{_libdir}/*.so
-%endif
 
 %files -n %{develname}
 %doc DISCLAIMER
