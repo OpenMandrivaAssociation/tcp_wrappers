@@ -132,7 +132,6 @@ ln hosts_access.5 %{buildroot}%{_mandir}/man5/hosts.allow.5
 ln hosts_access.5 %{buildroot}%{_mandir}/man5/hosts.deny.5
 install -m644 tcpd.8 tcpdchk.8 tcpdmatch.8 %{buildroot}%{_mandir}/man8
 
-install -d %{buildroot}%{uclibc_root}{/%{_lib},%{_libdir}}
 cp -a libwrap.so.* %{buildroot}/%{_lib}
 ln -srf %{buildroot}/%{_lib}/libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}%{_libdir}/libwrap.so
 
@@ -157,7 +156,6 @@ install -m755 try-from %{buildroot}%{_sbindir}
 %{_mandir}/man*/*
 
 %files -n %{libname}
-%doc README
 /%{_lib}/*.so.%{major}*
 
 %files -n %{develname}
