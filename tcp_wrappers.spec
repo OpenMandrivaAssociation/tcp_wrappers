@@ -42,6 +42,7 @@ Patch101:	tcp_wrappers-7.6-netgroup2.patch
 Patch102:	tcp_wrappers-7.6-dont-hardcode-compiler.patch
 Patch103:	tcp_wrappers-7.6-clang.patch
 BuildConflicts:	%{name}-devel
+BuildRequires:	pkgconfig(libnsl)
 
 %description
 The tcp_wrappers package provides small daemon programs which can
@@ -114,7 +115,7 @@ its header files.
 %patch103 -p1 -b .clang
 
 %build
-%make CC=%{__cc} RPM_OPT_FLAGS="%{optflags} -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR" \
+%make_build CC=%{__cc} RPM_OPT_FLAGS="%{optflags} -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR" \
     LDFLAGS="%{ldflags}" NETGROUP=-DNETGROUP REAL_DAEMON_DIR=%{_sbindir} \
     MAJOR=%{LIB_MAJOR} MINOR=%{LIB_MINOR} REL=%{LIB_REL} linux
 
