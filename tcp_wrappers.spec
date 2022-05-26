@@ -3,14 +3,14 @@
 %define LIB_REL 6
 
 %define _disable_lto 1
-%define	major %{LIB_MAJOR}
+%define major %{LIB_MAJOR}
 %define libname %mklibname wrap %{major}
 %define develname %mklibname wrap -d
 
 Summary:	A security tool which acts as a wrapper for TCP daemons
 Name:		tcp_wrappers
 Version:	7.6
-Release:	62
+Release:	63
 Group:		System/Servers
 License:	BSD
 URL:		ftp://ftp.porcupine.org/pub/security/index.html
@@ -58,7 +58,7 @@ This version also supports IPv6.
 Summary:	A security library which acts as a wrapper for TCP daemons
 Group:		System/Libraries
 
-%description -n	%{libname}
+%description -n %{libname}
 The tcp_wrappers package provides small daemon programs which can
 monitor and filter incoming requests for systat, finger, ftp, telnet,
 rlogin, rsh, exec, tftp, talk and other network services.
@@ -73,7 +73,7 @@ Provides:	libwrap-devel = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
 Provides:	wrap-devel = %{version}-%{release}
 Obsoletes:	%{name}-devel < %{version}-%{release}
-Obsoletes:	%{mklibname wrap 0 -d}
+Obsoletes:	%{mklibname wrap 0 -d} < %{version}-%{release}
 
 %description -n	%{develname}
 The tcp_wrappers package provides small daemon programs which can
@@ -84,7 +84,6 @@ This package contains the static tcp_wrappers library (libwrap) and
 its header files.
 
 %prep
-
 %setup -q -n %{name}_%{version}
 %patch0 -p1 -b .config
 %patch1 -p1 -b .setenv
@@ -116,25 +115,23 @@ its header files.
 
 %build
 %make_build CC=%{__cc} RPM_OPT_FLAGS="%{optflags} -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR" \
-    LDFLAGS="%{ldflags}" NETGROUP=-DNETGROUP REAL_DAEMON_DIR=%{_sbindir} \
+    LDFLAGS="%{build_ldflags}" NETGROUP=-DNETGROUP REAL_DAEMON_DIR=%{_sbindir} \
     MAJOR=%{LIB_MAJOR} MINOR=%{LIB_MINOR} REL=%{LIB_REL} linux
 
 %install
-
 install -d %{buildroot}%{_includedir}
-install -d %{buildroot}/%{_lib}
 install -d %{buildroot}%{_libdir}
 install -d %{buildroot}%{_sbindir}
 install -d %{buildroot}%{_mandir}/man{3,5,8}
+
+cp -a libwrap.so.* %{buildroot}/%{_libdir}
+ln -s %{_libdr}/libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}%{_libdir}/libwrap.so
 
 install -m644 hosts_access.3 %{buildroot}%{_mandir}/man3
 install -m644 hosts_access.5 hosts_options.5 %{buildroot}%{_mandir}/man5
 ln hosts_access.5 %{buildroot}%{_mandir}/man5/hosts.allow.5
 ln hosts_access.5 %{buildroot}%{_mandir}/man5/hosts.deny.5
 install -m644 tcpd.8 tcpdchk.8 tcpdmatch.8 %{buildroot}%{_mandir}/man8
-
-cp -a libwrap.so.* %{buildroot}/%{_lib}
-ln -srf %{buildroot}/%{_lib}/libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}%{_libdir}/libwrap.so
 
 # (tpg) do not install it
 #install -m644 libwrap.a %{buildroot}%{_libdir}
@@ -146,18 +143,13 @@ install -m755 tcpdchk %{buildroot}%{_sbindir}
 install -m755 tcpdmatch %{buildroot}%{_sbindir}
 install -m755 try-from %{buildroot}%{_sbindir}
 
-# (fg) 20000905 FIXME FIXME FIXME: setenv in libwrap.a is rather strange for
-# one, so I remove it here - but will it break anything else?
-#(peroyvind): do it with a patch in stead now
-#ar d %{buildroot}%{_libdir}/libwrap.a setenv.o
-
 %files
 %doc BLURB CHANGES README* DISCLAIMER Banners.Makefile
 %{_sbindir}/*
-%{_mandir}/man*/*
+%doc %{_mandir}/man*/*
 
 %files -n %{libname}
-/%{_lib}/*.so.%{major}*
+%{_libdir}/*.so.%{major}*
 
 %files -n %{develname}
 %doc DISCLAIMER
