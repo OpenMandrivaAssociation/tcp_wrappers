@@ -10,7 +10,7 @@
 Summary:	A security tool which acts as a wrapper for TCP daemons
 Name:		tcp_wrappers
 Version:	7.6
-Release:	63
+Release:	64
 Group:		System/Servers
 License:	BSD
 URL:		ftp://ftp.porcupine.org/pub/security/index.html
@@ -125,7 +125,7 @@ install -d %{buildroot}%{_sbindir}
 install -d %{buildroot}%{_mandir}/man{3,5,8}
 
 cp -a libwrap.so.* %{buildroot}/%{_libdir}
-ln -s %{_libdr}/libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}%{_libdir}/libwrap.so
+ln -s libwrap.so.%{LIB_MAJOR}.%{LIB_MINOR}.%{LIB_REL} %{buildroot}%{_libdir}/libwrap.so
 
 install -m644 hosts_access.3 %{buildroot}%{_mandir}/man3
 install -m644 hosts_access.5 hosts_options.5 %{buildroot}%{_mandir}/man5
