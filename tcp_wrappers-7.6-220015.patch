@@ -23,8 +23,8 @@ diff -up tcp_wrappers_7.6/hosts_ctl.c.patch17 tcp_wrappers_7.6/hosts_ctl.c
 diff -up tcp_wrappers_7.6/socket.c.patch17 tcp_wrappers_7.6/socket.c
 --- tcp_wrappers_7.6/socket.c.patch17	2008-08-29 09:45:12.000000000 +0200
 +++ tcp_wrappers_7.6/socket.c	2008-08-29 09:45:12.000000000 +0200
-@@ -147,6 +147,51 @@ struct request_info *request;
- #endif
+@@ -130,6 +130,51 @@ struct request_info *request;
+     request->server->sin = &server;
  }
  
 +/* sock_hostnofd - look up endpoint addresses and install conversion methods */
@@ -42,7 +42,7 @@ diff -up tcp_wrappers_7.6/socket.c.patch17 tcp_wrappers_7.6/socket.c
 +     * and hostname. */
 +    if (strlen(request->client->addr) &&
 +	    HOSTNAME_KNOWN(request->client->addr) &&
-+	    (!strlen(request->client->addr) ||
++	    (!strlen(request->client->name) ||
 +		!HOSTNAME_KNOWN(request->client->name)))
 +	host = request->client->addr;
 +    else

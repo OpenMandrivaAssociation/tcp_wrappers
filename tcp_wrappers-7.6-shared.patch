@@ -6,9 +6,9 @@ diff -up tcp_wrappers_7.6/Makefile.patch11 tcp_wrappers_7.6/Makefile
  linux:
  	@make REAL_DAEMON_DIR=$(REAL_DAEMON_DIR) STYLE=$(STYLE) \
 -	LIBS="-lnsl" RANLIB=ranlib ARFLAGS=rv AUX_OBJ= \
--	NETGROUP="-DNETGROUP" TLI= EXTRA_CFLAGS="$(RPM_OPT_FLAGS) -DSYS_ERRLIST_DEFINED -DBROKEN_SO_LINGER -DINET6=1 -Dss_family=__ss_family -Dss_len=__ss_len" all
+-	NETGROUP="-DNETGROUP" TLI= EXTRA_CFLAGS="$(RPM_OPT_FLAGS) -DUSE_STRERROR -DSYS_ERRLIST_DEFINED -DBROKEN_SO_LINGER -Dss_family=__ss_family -Dss_len=__ss_len" all
 +	LIBS="-lnsl" RANLIB=ranlib ARFLAGS=rv AUX_OBJ=weak_symbols.o \
-+	NETGROUP="-DNETGROUP" TLI= EXTRA_CFLAGS="$(RPM_OPT_FLAGS)  -fPIC -DPIC -D_REENTRANT -DSYS_ERRLIST_DEFINED -DBROKEN_SO_LINGER -DINET6=1 -Dss_family=__ss_family -Dss_len=__ss_len -DHAVE_WEAKSYMS" all
++	NETGROUP="-DNETGROUP" TLI= EXTRA_CFLAGS="$(RPM_OPT_FLAGS)  -fPIC -DPIC -D_REENTRANT -DUSE_STRERROR -DSYS_ERRLIST_DEFINED -DBROKEN_SO_LINGER -Dss_family=__ss_family -Dss_len=__ss_len -DHAVE_WEAKSYMS" all
  
  linux-old:
  	@make REAL_DAEMON_DIR=$(REAL_DAEMON_DIR) STYLE=$(STYLE) \
@@ -52,30 +52,6 @@ diff -up tcp_wrappers_7.6/Makefile.patch11 tcp_wrappers_7.6/Makefile
 +weak_symbols.o: tcpd.h
  workarounds.o: cflags
  workarounds.o: tcpd.h
-diff -up tcp_wrappers_7.6/scaffold.c.patch11 tcp_wrappers_7.6/scaffold.c
---- tcp_wrappers_7.6/scaffold.c.patch11	2008-08-29 09:45:12.000000000 +0200
-+++ tcp_wrappers_7.6/scaffold.c	2008-08-29 09:45:12.000000000 +0200
-@@ -237,10 +237,17 @@ struct request_info *request;
- 
- /* ARGSUSED */
- 
--void    rfc931(request)
--struct request_info *request;
-+void    rfc931(rmt_sin, our_sin, dest)
-+#ifndef INET6
-+struct sockaddr_in *rmt_sin;
-+struct sockaddr_in *our_sin;
-+#else
-+struct sockaddr *rmt_sin;
-+struct sockaddr *our_sin;
-+#endif
-+char   *dest;
- {
--    strcpy(request->user, unknown);
-+    strcpy(dest, unknown);
- }
- 
- /* check_path - examine accessibility */
 diff -up tcp_wrappers_7.6/tcpd.h.patch11 tcp_wrappers_7.6/tcpd.h
 --- tcp_wrappers_7.6/tcpd.h.patch11	2008-08-29 09:45:12.000000000 +0200
 +++ tcp_wrappers_7.6/tcpd.h	2008-08-29 09:45:12.000000000 +0200
@@ -105,7 +81,7 @@ diff -up tcp_wrappers_7.6/tcpd.h.patch11 tcp_wrappers_7.6/tcpd.h
  /* Structure to describe one communications endpoint. */
  
  #define STRING_LENGTH	128		/* hosts, users, processes */
-@@ -29,10 +48,10 @@ struct request_info {
+@@ -92,10 +111,10 @@ struct request_info {
      char    pid[10];			/* access via eval_pid(request) */
      struct host_info client[1];		/* client endpoint info */
      struct host_info server[1];		/* server endpoint info */
@@ -120,12 +96,12 @@ diff -up tcp_wrappers_7.6/tcpd.h.patch11 tcp_wrappers_7.6/tcpd.h
      struct netconfig *config;		/* netdir handle */
  };
  
-@@ -65,25 +84,34 @@ extern char paranoid[];
+@@ -132,33 +151,38 @@ extern char paranoid[];
  /* Global functions. */
  
  #if defined(TLI) || defined(PTX) || defined(TLI_SEQUENT)
 -extern void fromhost();			/* get/validate client host info */
-+extern void fromhost __P((struct request_info *));	/* get/validate client host info */
++extern void fromhost __P((struct request_info *));			/* get/validate client host info */
  #else
  #define fromhost sock_host		/* no TLI support needed */
  #endif
@@ -139,18 +115,25 @@ diff -up tcp_wrappers_7.6/tcpd.h.patch11 tcp_wrappers_7.6/tcpd.h
 -extern char *xgets();			/* fgets() on steroids */
 -extern char *split_at();		/* strchr() and split */
 -extern unsigned long dot_quad_addr();	/* restricted inet_addr() */
-+extern void shell_cmd __P((char *));	/* execute shell command */
-+extern char *percent_x __P((char *, int, char *, struct request_info *)); /* do %<char> expansion */
-+#ifdef INET6
-+extern void rfc931 __P((struct sockaddr *, struct sockaddr *, char *)); /* client name from RFC 931 daemon */
-+#else
-+extern void rfc931 __P((struct sockaddr_in *, struct sockaddr_in *, char *)); /* client name from RFC 931 daemon */
-+#endif
-+extern void clean_exit __P((struct request_info *)); /* clean up and exit */
-+extern void refuse __P((struct request_info *));	/* clean up and exit */
-+extern char *xgets __P((char *, int, FILE *));	/* fgets() on steroids */
-+extern char *split_at __P((char *, int));	/* strchr() and split */
-+extern unsigned long dot_quad_addr __P((char *)); /* restricted inet_addr() */
+-extern int numeric_addr();		/* IP4/IP6 inet_addr (restricted) */
+-extern struct hostent *tcpd_gethostbyname();
++extern void shell_cmd __P((char *));		/* execute shell command */
++extern char *percent_x __P((char *, int, char *, struct request_info *));		/* do %<char> expansion */
++extern void rfc931 __P((struct sockaddr_gen *, struct sockaddr_gen *, char *));			/* client name from RFC 931 daemon */
++extern void clean_exit __P((struct request_info *));		/* clean up and exit */
++extern void refuse __P((struct request_info *));			/* clean up and exit */
++extern char *xgets __P((char *, int, FILE *));			/* fgets() on steroids */
++extern char *split_at __P((char *, int));		/* strchr() and split */
++extern unsigned long dot_quad_addr __P((char *));	/* restricted inet_addr() */
++extern int numeric_addr __P((char *, union gen_addr *, int *, int *));		/* IP4/IP6 inet_addr (restricted) */
++extern struct hostent *tcpd_gethostbyname __P((char *, int));
+ 					/* IP4/IP6 gethostbyname */
+ #ifdef HAVE_IPV6
+-extern char *skip_ipv6_addrs();		/* skip over colons in IPv6 addrs */
++extern char *skip_ipv6_addrs __P((char *));		/* skip over colons in IPv6 addrs */
+ #else
+ #define skip_ipv6_addrs(x)	x
+ #endif
  
  /* Global variables. */
  
@@ -165,7 +148,7 @@ diff -up tcp_wrappers_7.6/tcpd.h.patch11 tcp_wrappers_7.6/tcpd.h
  extern char *hosts_allow_table;		/* for verification mode redirection */
  extern char *hosts_deny_table;		/* for verification mode redirection */
  extern int hosts_access_verbose;	/* for verbose matching mode */
-@@ -96,9 +124,14 @@ extern int resident;			/* > 0 if residen
+@@ -171,9 +195,14 @@ extern int resident;			/* > 0 if residen
    */
  
  #ifdef __STDC__
@@ -180,7 +163,7 @@ diff -up tcp_wrappers_7.6/tcpd.h.patch11 tcp_wrappers_7.6/tcpd.h
  extern struct request_info *request_init();	/* initialize request */
  extern struct request_info *request_set();	/* update request structure */
  #endif
-@@ -121,27 +154,31 @@ extern struct request_info *request_set(
+@@ -196,27 +225,31 @@ extern struct request_info *request_set(
    * host_info structures serve as caches for the lookup results.
    */
  
@@ -222,7 +205,7 @@ diff -up tcp_wrappers_7.6/tcpd.h.patch11 tcp_wrappers_7.6/tcpd.h
  #endif
  
   /*
-@@ -182,7 +219,7 @@ extern struct tcpd_context tcpd_context;
+@@ -257,7 +290,7 @@ extern struct tcpd_context tcpd_context;
    * behavior.
    */
  
@@ -231,7 +214,7 @@ diff -up tcp_wrappers_7.6/tcpd.h.patch11 tcp_wrappers_7.6/tcpd.h
  extern int dry_run;			/* verification flag */
  
  /* Bug workarounds. */
-@@ -221,3 +258,7 @@ extern char *fix_strtok();
+@@ -296,3 +329,7 @@ extern char *fix_strtok();
  #define strtok	my_strtok
  extern char *my_strtok();
  #endif
@@ -254,3 +237,31 @@ diff -up /dev/null tcp_wrappers_7.6/weak_symbols.c
 +int deny_severity = LOG_WARNING;
 +int allow_severity = SEVERITY; 
 +#endif
+diff -up tcp_wrappers_7.6/scaffold.c.patch11 tcp_wrappers_7.6/scaffold.c
+--- tcp_wrappers_7.6/scaffold.c.patch11	2013-01-28 11:08:48.598273563 +0100
++++ tcp_wrappers_7.6/scaffold.c	2013-01-28 11:08:56.069316992 +0100
+@@ -25,7 +25,7 @@ static char sccs_id[] = "@(#) scaffold.c
+ #define	INADDR_NONE	(-1)		/* XXX should be 0xffffffff */
+ #endif
+ 
+-extern char *malloc();
++extern void *malloc(size_t);
+ 
+ /* Application-specific. */
+ 
+@@ -180,10 +180,12 @@ struct request_info *request;
+ 
+ /* ARGSUSED */
+ 
+-void    rfc931(request)
+-struct request_info *request;
++void    rfc931(rmt_sin, our_sin, dest)
++struct sockaddr_gen *rmt_sin;
++struct sockaddr_gen *our_sin;
++char   *dest;
+ {
+-    strcpy(request->user, unknown);
++    strcpy(dest, unknown);
+ }
+ 
+ /* check_path - examine accessibility */

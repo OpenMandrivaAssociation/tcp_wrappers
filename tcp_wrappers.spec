@@ -10,37 +10,44 @@
 Summary:	A security tool which acts as a wrapper for TCP daemons
 Name:		tcp_wrappers
 Version:	7.6
-Release:	65
+Release:	66
 Group:		System/Servers
 License:	BSD
-URL:		ftp://ftp.porcupine.org/pub/security/index.html
-Source0:	http://ftp.porcupine.org/pub/security/%{name}_%{version}.tar.bz2
-Patch0:		tcpw7.2-config.patch
-Patch1:		tcpw7.2-setenv.patch
-Patch2:		tcpw7.6-netgroup.patch
-Patch3:		tcp_wrappers-7.6-bug11881.patch
-Patch4:		tcp_wrappers-7.6-bug17795.patch
-Patch5:		tcp_wrappers-7.6-bug17847.patch
-Patch6:		tcp_wrappers-7.6-fixgethostbyname.patch
-Patch7:		tcp_wrappers-7.6-docu.patch
-Patch9:		tcp_wrappers.usagi-ipv6.patch
-Patch10:	tcp_wrappers.ume-ipv6.patch
-Patch11:	tcp_wrappers-7.6-shared.patch
-Patch12:	tcp_wrappers-7.6-sig.patch
-Patch13:	tcp_wrappers-7.6-strerror.patch
-Patch14:	tcp_wrappers-7.6-ldflags.patch
-Patch15:	tcp_wrappers-7.6-fix_sig-bug141110.patch
-Patch16:	tcp_wrappers-7.6-162412.patch
-Patch17:	tcp_wrappers-7.6-220015.patch
-Patch18:	tcp_wrappers-7.6-restore_sigalarm.patch
-Patch19:	tcp_wrappers-7.6-siglongjmp.patch
-Patch20:	tcp_wrappers-7.6-sigchld.patch
-Patch21:	tcp_wrappers-7.6-196326.patch
-Patch22:	tcp_wrappers_7.6-249430.patch
-Patch100:	tcp_wrappers-bug41864.diff
-Patch101:	tcp_wrappers-7.6-netgroup2.patch
+URL:		http://ftp.porcupine.org/pub/security/index.html
+Source0:	http://ftp.porcupine.org/pub/security/%{name}_%{version}-ipv6.4.tar.gz
+# Borrowed from others
+Patch0:		https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcpw7.2-config.patch
+Patch1:		https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcpw7.2-setenv.patch
+Patch2:		https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcpw7.6-netgroup.patch
+Patch3:		https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-bug11881.patch
+Patch4:		https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-bug17795.patch
+Patch5:		https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-bug17847.patch
+Patch6:		https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-fixgethostbyname.patch
+Patch7:		https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-docu.patch
+Patch9:		https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-man.patch
+Patch10:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers.usagi-ipv6.patch
+Patch11:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-shared.patch
+Patch12:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-sig.patch
+Patch14:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-ldflags.patch
+Patch15:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-fix_sig-bug141110.patch
+Patch16:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-162412.patch
+Patch17:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-220015.patch
+Patch19:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-siglongjmp.patch
+Patch20:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-sigchld.patch
+Patch21:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-196326.patch
+Patch22:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers_7.6-249430.patch
+Patch23:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-inetdconf.patch
+Patch24:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-bug698464.patch
+Patch25:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-xgets.patch
+Patch26:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-initgroups.patch
+Patch27:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-warnings.patch
+Patch28:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-uchart_fix.patch
+Patch29:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-altformat.patch
+Patch30:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-7.6-aclexec.patch
+Patch31:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrappers-inetcf-c99.patch
+# OM only
+#Patch101:	tcp_wrappers-7.6-netgroup2.patch
 Patch102:	tcp_wrappers-7.6-dont-hardcode-compiler.patch
-Patch103:	tcp_wrappers-7.6-clang.patch
 BuildConflicts:	%{name}-devel
 BuildRequires:	pkgconfig(libnsl)
 
@@ -84,37 +91,10 @@ This package contains the static tcp_wrappers library (libwrap) and
 its header files.
 
 %prep
-%setup -q -n %{name}_%{version}
-%patch0 -p1 -b .config
-%patch1 -p1 -b .setenv
-%patch2 -p1 -b .netgroup
-%patch3 -p1 -b .bug11881
-%patch4 -p1 -b .bug17795
-%patch5 -p1 -b .bug17847
-%patch6 -p1 -b .fixgethostbyname
-%patch7 -p1 -b .docu
-%patch9 -p1 -b .usagi-ipv6
-%patch10 -p1 -b .ume-ipv6
-%patch11 -p1 -b .shared
-%patch12 -p1 -b .sig
-%patch13 -p1 -b .strerror
-%patch14 -p1 -b .cflags
-%patch15 -p1 -b .fix_sig
-%patch16 -p1 -b .162412
-%patch17 -p1 -b .220015
-%patch18 -p1 -b .restore_sigalarm
-%patch19 -p1 -b .siglongjmp
-%patch20 -p1 -b .sigchld
-%patch21 -p1 -b .196326
-%patch22 -p1 -b .249430
-
-%patch100 -p0 -b .bug41864
-%patch101 -p1 -b .netgroup2~
-%patch102 -p1 -b .cc~
-%patch103 -p1 -b .clang
+%autosetup -p1 -n %{name}_%{version}-ipv6.4
 
 %build
-%make_build CC=%{__cc} RPM_OPT_FLAGS="%{optflags} -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR" \
+%make_build CC="%{__cc}" RPM_OPT_FLAGS="%{optflags} -fPIC -DPIC -D_REENTRANT -DHAVE_STRERROR -DACLEXEC" \
     LDFLAGS="%{build_ldflags}" NETGROUP=-DNETGROUP REAL_DAEMON_DIR=%{_sbindir} \
     MAJOR=%{LIB_MAJOR} MINOR=%{LIB_MINOR} REL=%{LIB_REL} linux
 
