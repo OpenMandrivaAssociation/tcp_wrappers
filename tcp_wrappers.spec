@@ -13,7 +13,7 @@ Version:	7.6
 Release:	66
 Group:		System/Servers
 License:	BSD
-URL:		http://ftp.porcupine.org/pub/security/index.html
+URL:		https://ftp.porcupine.org/pub/security/index.html
 Source0:	http://ftp.porcupine.org/pub/security/%{name}_%{version}-ipv6.4.tar.gz
 # Borrowed from others
 Patch0:		https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcpw7.2-config.patch
