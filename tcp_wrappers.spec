@@ -49,6 +49,7 @@ Patch31:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrapp
 #Patch101:	tcp_wrappers-7.6-netgroup2.patch
 Patch102:	tcp_wrappers-7.6-dont-hardcode-compiler.patch
 BuildConflicts:	%{name}-devel
+BuildRequires:	make
 BuildRequires:	pkgconfig(libnsl)
 
 %description
