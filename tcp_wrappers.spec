@@ -10,7 +10,7 @@
 Summary:	A security tool which acts as a wrapper for TCP daemons
 Name:		tcp_wrappers
 Version:	7.6
-Release:	66
+Release:	67
 Group:		System/Servers
 License:	BSD
 URL:		https://ftp.porcupine.org/pub/security/index.html
@@ -48,6 +48,7 @@ Patch31:	https://src.fedoraproject.org/rpms/tcp_wrappers/raw/rawhide/f/tcp_wrapp
 # OM only
 #Patch101:	tcp_wrappers-7.6-netgroup2.patch
 Patch102:	tcp_wrappers-7.6-dont-hardcode-compiler.patch
+Patch103:	tcp_wrappers-clang21.patch
 BuildConflicts:	%{name}-devel
 BuildRequires:	make
 BuildRequires:	pkgconfig(libnsl)

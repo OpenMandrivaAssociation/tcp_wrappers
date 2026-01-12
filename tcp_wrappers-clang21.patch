@@ -1,0 +1,25 @@
+diff -up tcp_wrappers_7.6-ipv6.4/hosts_access.c.omv~ tcp_wrappers_7.6-ipv6.4/hosts_access.c
+--- tcp_wrappers_7.6-ipv6.4/hosts_access.c.omv~	2026-01-12 00:35:26.993788911 +0000
++++ tcp_wrappers_7.6-ipv6.4/hosts_access.c	2026-01-12 00:35:33.053803237 +0000
+@@ -37,9 +37,6 @@ static char sccsid[] = "@(#) hosts_acces
+ #include <rpcsvc/ypclnt.h>
+ #include <netdb.h>
+ 
+-extern char *fgets();
+-extern int errno;
+-
+ #ifndef	INADDR_NONE
+ #define	INADDR_NONE	(-1)		/* XXX should be 0xffffffff */
+ #endif
+diff -up tcp_wrappers_7.6-ipv6.4/misc.c.omv~ tcp_wrappers_7.6-ipv6.4/misc.c
+--- tcp_wrappers_7.6-ipv6.4/misc.c.omv~	2026-01-12 00:35:12.143753806 +0000
++++ tcp_wrappers_7.6-ipv6.4/misc.c	2026-01-12 00:35:18.263768273 +0000
+@@ -20,8 +20,6 @@ static char sccsic[] = "@(#) misc.c 1.2
+ 
+ #include "tcpd.h"
+ 
+-extern char *fgets();
+-
+ #ifndef	INADDR_NONE
+ #define	INADDR_NONE	(-1)		/* XXX should be 0xffffffff */
+ #endif
